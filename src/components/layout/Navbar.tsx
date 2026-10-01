@@ -125,7 +125,18 @@ export default function Navbar() {
             {/* Search pill */}
             <div className="relative">
               {searchOpen ? (
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-border rounded-pill px-4 py-2 animate-fade-in">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const q = searchQuery.trim();
+                    if (q) {
+                      setSearchOpen(false);
+                      setSearchQuery('');
+                      router.push(`/shop?search=${encodeURIComponent(q)}`);
+                    }
+                  }}
+                  className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-border rounded-pill px-4 py-2 animate-fade-in"
+                >
                   <MagnifyingGlassIcon className={`w-4 h-4 flex-shrink-0 ${textColor}`} />
                   <input
                     type="search"
@@ -137,13 +148,14 @@ export default function Navbar() {
                     onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
                   />
                   <button
+                    type="button"
                     onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
                     className={`${textColor} hover:opacity-70 transition-opacity`}
                     aria-label="Close search"
                   >
                     <XMarkIcon className="w-4 h-4" />
                   </button>
-                </div>
+                </form>
               ) : (
                 <button
                   onClick={() => setSearchOpen(true)}

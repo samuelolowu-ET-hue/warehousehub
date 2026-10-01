@@ -91,8 +91,15 @@ export default function ShopFilters({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search products…"
-              className="w-full pl-9 pr-4 py-2.5 border border-border rounded-btn bg-white text-body-md text-ink placeholder:text-fog focus:outline-none focus:ring-2 focus:ring-brass/30 focus:border-brass transition-colors"
+              className="w-full pl-9 pr-12 py-2.5 border border-border rounded-btn bg-white text-body-md text-ink placeholder:text-fog focus:outline-none focus:ring-2 focus:ring-brass/30 focus:border-brass transition-colors"
             />
+            <button
+              type="submit"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-btn text-fog hover:text-ink transition-colors"
+              aria-label="Search"
+            >
+              <MagnifyingGlassIcon className="w-4 h-4" />
+            </button>
           </div>
         </form>
 
