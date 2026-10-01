@@ -24,7 +24,7 @@ module.exports = {
         error: '#B04040',
       },
       fontFamily: {
-        serif: ['Instrument Serif', 'Georgia', 'serif'],
+        serif: ['Apple Garamond', 'Garamond', 'EB Garamond', 'Georgia', 'serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
