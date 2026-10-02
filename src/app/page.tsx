@@ -24,8 +24,14 @@ function Hero() {
           aria-hidden="true"
         />
       </div>
-      {/* Overlay gradient for text legibility */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate/80 via-slate/70 to-ink/80" />
+
+      {/* Deep cinematic gradient — bottom-heavy for text legibility */}
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/50 to-ink/80" />
+
+      {/* Subtle warm vignette from sides */}
+      <div className="absolute inset-0 bg-gradient-to-r from-slate/40 via-transparent to-slate/40" />
+
+      {/* Brass cross-hatch texture */}
       <div
         className="absolute inset-0 opacity-10"
         style={{
@@ -33,14 +39,15 @@ function Hero() {
         }} />
       
       <div className="relative container-content text-center py-24">
-        <p className="text-label-sm font-medium text-brass uppercase tracking-widest mb-6">
+        <p className="text-label-sm font-medium text-brass uppercase tracking-widest mb-6 hero-text-shadow"
+           style={{ fontFamily: 'var(--font-ui)' }}>
           Premium Storage &amp; Organisation
         </p>
-        <h1 className="font-serif text-display-2xl text-chalk mb-6 max-w-4xl mx-auto leading-tight">
+        <h1 className="font-serif text-display-2xl text-chalk mb-6 max-w-4xl mx-auto leading-tight hero-text-shadow">
           A place for everything,{' '}
           <em className="not-italic text-brass">beautifully</em> considered
         </h1>
-        <p className="text-body-lg text-fog max-w-xl mx-auto mb-10">
+        <p className="text-body-lg text-chalk/80 max-w-xl mx-auto mb-10 hero-text-shadow">
           Warehouse-grade storage solutions with an editorial eye. Built to last, designed to inspire the spaces you live and work in.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -50,7 +57,6 @@ function Hero() {
           <Link
             href="/shop"
             className="btn-ghost border-chalk text-chalk hover:bg-chalk hover:text-ink text-body-md px-8 py-4">
-            
             Browse Categories
           </Link>
         </div>

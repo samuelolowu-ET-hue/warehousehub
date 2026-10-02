@@ -85,7 +85,9 @@ export default function Navbar() {
     }
   };
 
-  const navBg = scrolled ? 'bg-slate shadow-nav' : 'bg-transparent';
+  const navBg = scrolled
+    ? 'bg-slate shadow-nav'
+    : 'navbar-glass';
   const textColor = 'text-chalk';
   const logoColor = 'text-chalk';
 
