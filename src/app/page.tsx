@@ -39,7 +39,7 @@ function Hero() {
         }} />
       
       <div className="relative container-content text-center py-24">
-        <p className="text-label-sm font-medium text-chalk uppercase tracking-widest mb-6 hero-text-shadow"
+        <p className="text-label-sm font-medium text-brass uppercase tracking-widest mb-6 hero-text-shadow"
            style={{ fontFamily: 'var(--font-ui)' }}>
           Premium Storage &amp; Organisation
         </p>
@@ -47,7 +47,7 @@ function Hero() {
           A place for everything,{' '}
           <em className="not-italic text-brass">beautifully</em> considered
         </h1>
-        <p className="text-body-lg text-chalk/80 max-w-xl mx-auto mb-10 hero-text-shadow">
+        <p className="text-body-lg text-chalk max-w-xl mx-auto mb-10 hero-text-shadow">
           Warehouse-grade storage solutions with an editorial eye. Built to last, designed to inspire the spaces you live and work in.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
