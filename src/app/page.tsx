@@ -39,7 +39,7 @@ function Hero() {
         }} />
       
       <div className="relative container-content text-center py-24">
-        <p className="text-label-sm font-medium text-brass uppercase tracking-widest mb-6 hero-text-shadow"
+        <p className="text-label-sm font-medium text-chalk uppercase tracking-widest mb-6 hero-text-shadow"
            style={{ fontFamily: 'var(--font-ui)' }}>
           Premium Storage &amp; Organisation
         </p>
