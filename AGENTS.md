@@ -8,6 +8,32 @@ WarehouseHub is a premium ecommerce storefront for warehouse, storage, and organ
 
 ---
 
+## Agent Pipeline
+
+```
+ARCHITECT
+    ↓
+DESIGN
+    ↓
+BUILD
+    ↓
+FUNCTIONAL TEST
+    ↓
+SECURITY AUDIT
+    ↓
+SECURITY FIX
+    ↓
+UX AUDIT
+    ↓
+ENGINEERING AUDIT
+    ↓
+FINAL TEST
+    ↓
+DEPLOY
+```
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
