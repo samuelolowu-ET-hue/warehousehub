@@ -1,18 +1,24 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { TrashIcon, MinusIcon, PlusIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function CartPage() {
   const { items, itemCount, subtotal, loading, removeItem, updateQuantity } = useCart();
-  const { user, signInWithGoogle } = useAuth();
+  const router = useRouter();
+  const { user } = useAuth();
 
-  const handleSignIn = async () => {
-    try { await signInWithGoogle(); } catch (e) { console.error(e); }
+  const handleSignIn = () => {
+    router.push('/login?next=/cart');
+  };
+
+  const handleSignInToCheckout = () => {
+    router.push('/login?next=/checkout');
   };
 
   if (loading) {
@@ -38,7 +44,9 @@ export default function CartPage() {
             Your Cart
           </p>
           <h1 className="font-serif text-display-sm text-chalk">
-            {itemCount === 0 ? 'Your cart is empty' : `${itemCount} item${itemCount !== 1 ? 's' : ''}`}
+            {itemCount === 0
+              ? 'Your cart is empty'
+              : `${itemCount} item${itemCount !== 1 ? 's' : ''}`}
           </h1>
         </div>
       </div>
@@ -70,7 +78,10 @@ export default function CartPage() {
               {!user && (
                 <div className="bg-linen border border-border rounded-card px-5 py-4 flex items-center justify-between gap-4">
                   <p className="text-body-sm text-ink">
-                    <button onClick={handleSignIn} className="text-brass hover:underline font-medium">
+                    <button
+                      onClick={handleSignIn}
+                      className="text-brass hover:underline font-medium"
+                    >
                       Sign in
                     </button>{' '}
                     to save your cart and access it from any device.
@@ -81,10 +92,7 @@ export default function CartPage() {
               {items?.map((li) => {
                 const image = li?.product?.images?.[0];
                 return (
-                  <div
-                    key={li?.id}
-                    className="card flex gap-4 p-4 md:p-5"
-                  >
+                  <div key={li?.id} className="card flex gap-4 p-4 md:p-5">
                     {/* Product image */}
                     <Link href={`/shop/${li?.product?.slug}`} className="flex-shrink-0">
                       <div className="w-20 h-20 md:w-24 md:h-24 rounded-card overflow-hidden bg-linen">
@@ -170,7 +178,9 @@ export default function CartPage() {
 
                 <div className="space-y-3 mb-5">
                   <div className="flex justify-between text-body-sm text-ink">
-                    <span>Subtotal ({itemCount} item{itemCount !== 1 ? 's' : ''})</span>
+                    <span>
+                      Subtotal ({itemCount} item{itemCount !== 1 ? 's' : ''})
+                    </span>
                     <span className="font-medium">£{subtotal?.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-body-sm text-fog">
@@ -191,15 +201,12 @@ export default function CartPage() {
                     Proceed to checkout
                   </Link>
                 ) : (
-                  <button onClick={handleSignIn} className="btn-primary w-full">
+                  <button onClick={handleSignInToCheckout} className="btn-primary w-full">
                     Sign in to checkout
                   </button>
                 )}
 
-                <Link
-                  href="/shop"
-                  className="btn-ghost w-full mt-3 text-center block"
-                >
+                <Link href="/shop" className="btn-ghost w-full mt-3 text-center block">
                   Continue shopping
                 </Link>
               </div>

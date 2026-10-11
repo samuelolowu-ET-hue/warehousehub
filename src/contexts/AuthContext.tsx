@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -9,6 +9,17 @@ interface AuthContextValue {
   session: Session | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (
+    email: string,
+    password: string
+  ) => Promise<{ user: User | null; session: Session | null }>;
+  signUpWithEmail: (
+    email: string,
+    password: string,
+    fullName?: string
+  ) => Promise<{ user: User | null; session: Session | null }>;
+  resetPasswordForEmail: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -17,6 +28,10 @@ const AuthContext = createContext<AuthContextValue>({
   session: null,
   loading: true,
   signInWithGoogle: async () => {},
+  signInWithEmail: async () => ({ user: null, session: null }),
+  signUpWithEmail: async () => ({ user: null, session: null }),
+  resetPasswordForEmail: async () => {},
+  updatePassword: async () => {},
   signOut: async () => {},
 });
 
@@ -50,11 +65,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const getOrigin = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.origin;
+    }
+    return process.env.NEXT_PUBLIC_SITE_URL ?? 'https://warehouseh2608.builtwithrocket.new';
+  };
+
   const signInWithGoogle = useCallback(async () => {
-    const redirectTo =
-      typeof window !== 'undefined'
-        ? `${window.location.origin}/auth/callback`
-        : `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://warehouseh2608.builtwithrocket.new'}/auth/callback`;
+    const redirectTo = `${getOrigin()}/auth/callback`;
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -66,13 +85,78 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (error) throw error;
   }, [supabase]);
 
+  const signInWithEmail = useCallback(
+    async (email: string, password: string) => {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (error) throw error;
+      return data;
+    },
+    [supabase]
+  );
+
+  const signUpWithEmail = useCallback(
+    async (email: string, password: string, fullName?: string) => {
+      const emailRedirectTo = `${getOrigin()}/auth/callback`;
+
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            full_name: fullName?.trim() || '',
+          },
+          emailRedirectTo,
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+    [supabase]
+  );
+
+  const resetPasswordForEmail = useCallback(
+    async (email: string) => {
+      const redirectTo = `${getOrigin()}/auth/callback?next=/reset-password`;
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo,
+      });
+      if (error) throw error;
+    },
+    [supabase]
+  );
+
+  const updatePassword = useCallback(
+    async (password: string) => {
+      const { error } = await supabase.auth.updateUser({
+        password,
+      });
+      if (error) throw error;
+    },
+    [supabase]
+  );
+
   const signOut = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   }, [supabase]);
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signOut }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        loading,
+        signInWithGoogle,
+        signInWithEmail,
+        signUpWithEmail,
+        resetPasswordForEmail,
+        updatePassword,
+        signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
