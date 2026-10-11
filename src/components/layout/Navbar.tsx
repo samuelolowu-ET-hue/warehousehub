@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
@@ -77,17 +77,12 @@ export default function Navbar() {
     }
   };
 
-  const handleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-    } catch (e) {
-      console.error(e);
-    }
+  const handleSignIn = () => {
+    setDrawerOpen(false);
+    router.push('/login');
   };
 
-  const navBg = scrolled
-    ? 'bg-slate shadow-nav'
-    : 'navbar-glass';
+  const navBg = scrolled ? 'bg-slate shadow-nav' : 'navbar-glass';
   const textColor = 'text-chalk';
   const logoColor = 'text-chalk';
 
@@ -147,11 +142,16 @@ export default function Navbar() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className={`bg-transparent border-none outline-none text-body-sm w-48 placeholder:text-fog ${textColor}`}
                     autoFocus
-                    onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
+                    onBlur={() => {
+                      if (!searchQuery) setSearchOpen(false);
+                    }}
                   />
                   <button
                     type="button"
-                    onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
+                    onClick={() => {
+                      setSearchOpen(false);
+                      setSearchQuery('');
+                    }}
                     className={`${textColor} hover:opacity-70 transition-opacity`}
                     aria-label="Close search"
                   >
@@ -310,7 +310,9 @@ export default function Navbar() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  const input = (e.currentTarget.elements.namedItem('drawerSearch') as HTMLInputElement)?.value?.trim();
+                  const input = (
+                    e.currentTarget.elements.namedItem('drawerSearch') as HTMLInputElement
+                  )?.value?.trim();
                   if (input) {
                     setDrawerOpen(false);
                     router.push(`/shop?search=${encodeURIComponent(input)}`);
@@ -385,11 +387,14 @@ export default function Navbar() {
                 </div>
               ) : (
                 <button
-                  onClick={() => { setDrawerOpen(false); handleSignIn(); }}
+                  onClick={() => {
+                    setDrawerOpen(false);
+                    handleSignIn();
+                  }}
                   className="w-full flex items-center gap-3 text-chalk hover:text-brass transition-colors duration-200"
                 >
                   <UserIcon className="w-5 h-5" />
-                  <span className="text-label-lg font-medium">Sign in with Google</span>
+                  <span className="text-label-lg font-medium">Sign in</span>
                 </button>
               )}
             </div>
@@ -417,12 +422,7 @@ function WarehouseIcon({ className }: { className?: string }) {
         strokeWidth="1.75"
         strokeLinejoin="round"
       />
-      <path
-        d="M10 26V20H18V26"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
+      <path d="M10 26V20H18V26" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />
       <rect x="11" y="13" width="6" height="4" rx="0.5" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );

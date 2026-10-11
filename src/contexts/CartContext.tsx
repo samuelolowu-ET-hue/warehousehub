@@ -1,13 +1,6 @@
-'use client';
+﻿'use client';
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-} from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Product } from '@/types';
@@ -156,13 +149,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     async (guestItems: CartLineItem[]) => {
       if (!guestItems.length) return;
       for (const li of guestItems) {
-        const { data: existing } = await supabase
+        let checkQuery = supabase
           .from('cart_items')
           .select('id, quantity')
           .eq('user_id', user!.id)
-          .eq('product_id', li.product.id)
-          .is('variant_id', li.variantId ?? null)
-          .maybeSingle();
+          .eq('product_id', li.product.id);
+
+        if (li.variantId) {
+          checkQuery = checkQuery.eq('variant_id', li.variantId);
+        } else {
+          checkQuery = checkQuery.is('variant_id', null);
+        }
+
+        const { data: existing } = await checkQuery.maybeSingle();
 
         if (existing) {
           await supabase
@@ -214,20 +213,29 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     async (product: Product, variantId: string | null = null, qty = 1) => {
       if (user) {
         // Check if already in server cart
-        const { data: existing } = await supabase
+        let checkQuery = supabase
           .from('cart_items')
           .select('id, quantity')
           .eq('user_id', user.id)
-          .eq('product_id', product.id)
-          .is('variant_id', variantId ?? null)
-          .maybeSingle();
+          .eq('product_id', product.id);
+
+        if (variantId) {
+          checkQuery = checkQuery.eq('variant_id', variantId);
+        } else {
+          checkQuery = checkQuery.is('variant_id', null);
+        }
+
+        const { data: existing } = await checkQuery.maybeSingle();
 
         if (existing) {
           const { error } = await supabase
             .from('cart_items')
             .update({ quantity: existing.quantity + qty })
             .eq('id', existing.id);
-          if (error) { console.error(error.message); return; }
+          if (error) {
+            console.error(error.message);
+            return;
+          }
           setItems((prev) =>
             prev.map((li) =>
               li.id === existing.id ? { ...li, quantity: existing.quantity + qty } : li
@@ -244,11 +252,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             })
             .select('id')
             .single();
-          if (error) { console.error(error.message); return; }
-          setItems((prev) => [
-            ...prev,
-            { id: data.id, product, variantId, quantity: qty },
-          ]);
+          if (error) {
+            console.error(error.message);
+            return;
+          }
+          setItems((prev) => [...prev, { id: data.id, product, variantId, quantity: qty }]);
         }
       } else {
         // Guest: localStorage
@@ -282,11 +290,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const removeItem = useCallback(
     async (cartItemId: string) => {
       if (user) {
-        const { error } = await supabase
-          .from('cart_items')
-          .delete()
-          .eq('id', cartItemId);
-        if (error) { console.error(error.message); return; }
+        const { error } = await supabase.from('cart_items').delete().eq('id', cartItemId);
+        if (error) {
+          console.error(error.message);
+          return;
+        }
         setItems((prev) => prev.filter((li) => li.id !== cartItemId));
       } else {
         setItems((prev) => {
@@ -312,15 +320,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           .from('cart_items')
           .update({ quantity })
           .eq('id', cartItemId);
-        if (error) { console.error(error.message); return; }
-        setItems((prev) =>
-          prev.map((li) => (li.id === cartItemId ? { ...li, quantity } : li))
-        );
+        if (error) {
+          console.error(error.message);
+          return;
+        }
+        setItems((prev) => prev.map((li) => (li.id === cartItemId ? { ...li, quantity } : li)));
       } else {
         setItems((prev) => {
-          let next = prev.map((li) =>
-            li.id === cartItemId ? { ...li, quantity } : li
-          );
+          let next = prev.map((li) => (li.id === cartItemId ? { ...li, quantity } : li));
           writeLocal(next);
           return next;
         });
@@ -345,7 +352,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ items, itemCount, subtotal, loading, addItem, removeItem, updateQuantity, clearCart }}
+      value={{
+        items,
+        itemCount,
+        subtotal,
+        loading,
+        addItem,
+        removeItem,
+        updateQuantity,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>
